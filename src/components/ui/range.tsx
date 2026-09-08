@@ -1,5 +1,4 @@
 import { type Element } from "solid-js";
-import { cn } from "@/lib/utils";
 
 type Props = {
   hint: Element;
@@ -46,9 +45,7 @@ export function Range(props: Props) {
         </span>
       </div>
       <input
-        class={cn(
-          "focus-visible:ring-accent/30 cursor-pointer rounded-full focus-visible:ring-2 focus-visible:outline-none",
-        )}
+        class="focus-visible:ring-accent/30 cursor-pointer rounded-full focus-visible:ring-2 focus-visible:outline-none"
         id={props.id}
         max={props.values.length - 1}
         min={0}

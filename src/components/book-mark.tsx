@@ -1,8 +1,6 @@
-import { cn } from "@/lib/utils";
-
 export function BookMark(props: { animated?: boolean; class?: string }) {
   return (
-    <svg aria-hidden="true" class={cn("size-6", props.class)} fill="none" viewBox="0 0 24 24">
+    <svg aria-hidden="true" class={props.class ?? "size-6"} fill="none" viewBox="0 0 24 24">
       <g
         class={props.animated ? "book-mark-enter" : undefined}
         stroke="currentColor"

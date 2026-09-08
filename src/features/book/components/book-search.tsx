@@ -1,21 +1,28 @@
 import { createSignal, createUniqueId, isPending } from "solid-js";
-import { useSearchParams } from "@solidjs/router";
+import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
 import { IconButton } from "@/components/ui/icon-button";
 import { SearchIcon, XIcon } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { buildHref, parseSearchParams } from "@/lib/url-state";
 
 export function BookSearch() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigateTo = useNavigate();
+  const [searchParams] = useSearchParams();
   const [input, setInput] = createSignal<HTMLInputElement>();
   const inputId = createUniqueId();
 
   function navigate(value: string) {
     const query = value.trim();
-    setSearchParams(
-      { page: undefined, search: query },
-      { replace: true, scroll: false },
-    );
+    const current = parseSearchParams(searchParams);
+    const next = { ...current, search: query || undefined };
+    delete next.page;
+    if (!next.search) delete next.search;
+    navigateTo(buildHref(next), {
+      replace: location.pathname === "/",
+      scroll: false,
+    });
   }
 
   return (

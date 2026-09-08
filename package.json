@@ -44,7 +44,6 @@
     "drizzle-orm": "^0.45.2",
     "postgres": "^3.4.9",
     "solid-js": "^2.0.0-rc.6",
-    "tailwind-merge": "^3.6.0",
     "valibot": "^1.4.2"
   }
 }

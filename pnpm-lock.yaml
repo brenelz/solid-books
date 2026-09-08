@@ -38,9 +38,6 @@ importers:
       solid-js:
         specifier: ^2.0.0-rc.6
         version: 2.0.0-rc.6
-      tailwind-merge:
-        specifier: ^3.6.0
-        version: 3.6.0
       valibot:
         specifier: ^1.4.2
         version: 1.4.2(typescript@5.9.3)
@@ -56,7 +53,7 @@ importers:
         version: 1.0.0-beta.3(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(solid-js@2.0.0-rc.6)
       '@solidjs/vite-plugin':
         specifier: ^3.0.0-next.39
-        version: 3.0.0-next.39(@solidjs/start-devtools@1.0.0-next.4(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(solid-js@2.0.0-rc.6))(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(@testing-library/jest-dom@6.9.1)(solid-js@2.0.0-rc.6)(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
+        version: 3.0.0-next.39(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(@testing-library/jest-dom@6.9.1)(solid-js@2.0.0-rc.6)(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
@@ -1548,12 +1545,6 @@ packages:
 
   '@solidjs/signals@2.0.0-rc.6':
     resolution: {integrity: sha512-lPqwZNLPq1Z9CBvgXkMvi1ZFr5OHUiFNz1X40+yehszDWEbJkneZx7BGKIe9eMT/AN1NSL+PMjOiMyZaqVB2xw==}
-
-  '@solidjs/start-devtools@1.0.0-next.4':
-    resolution: {integrity: sha512-RNjndz1PfUicxJi3XHwjoIsu9AHeOhpP8Y/bgRmumR5Z9ymdMsiRCL89Fq1YqxhBnHf+GL4kX/VvC+F8lgmTVA==}
-    peerDependencies:
-      '@solidjs/web': ^2.0.0-rc.0
-      solid-js: ^2.0.0-rc.0
 
   '@solidjs/testing-library@1.0.0-beta.3':
     resolution: {integrity: sha512-yJtAa6H76xr5lSkT7LVmaaTFCZZzxcwejzQ4UBV/+koZFByVZ5J0XMDVHZ539PGso+fyncI5iRxWyDWFqhtcLg==}
@@ -4153,9 +4144,6 @@ packages:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
 
-  tailwind-merge@3.6.0:
-    resolution: {integrity: sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==}
-
   tailwindcss@4.3.3:
     resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
 
@@ -5950,19 +5938,13 @@ snapshots:
 
   '@solidjs/signals@2.0.0-rc.6': {}
 
-  '@solidjs/start-devtools@1.0.0-next.4(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(solid-js@2.0.0-rc.6)':
-    dependencies:
-      '@solidjs/web': 2.0.0-rc.6(solid-js@2.0.0-rc.6)
-      solid-js: 2.0.0-rc.6
-    optional: true
-
   '@solidjs/testing-library@1.0.0-beta.3(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(solid-js@2.0.0-rc.6)':
     dependencies:
       '@solidjs/web': 2.0.0-rc.6(solid-js@2.0.0-rc.6)
       '@testing-library/dom': 10.4.1
       solid-js: 2.0.0-rc.6
 
-  '@solidjs/vite-plugin@3.0.0-next.39(@solidjs/start-devtools@1.0.0-next.4(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(solid-js@2.0.0-rc.6))(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(@testing-library/jest-dom@6.9.1)(solid-js@2.0.0-rc.6)(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))':
+  '@solidjs/vite-plugin@3.0.0-next.39(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(@testing-library/jest-dom@6.9.1)(solid-js@2.0.0-rc.6)(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@babel/core': 7.29.7
@@ -5975,7 +5957,6 @@ snapshots:
       vite: 8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)
       vitefu: 1.1.3(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
     optionalDependencies:
-      '@solidjs/start-devtools': 1.0.0-next.4(@solidjs/web@2.0.0-rc.6(solid-js@2.0.0-rc.6))(solid-js@2.0.0-rc.6)
       '@testing-library/jest-dom': 6.9.1
     transitivePeerDependencies:
       - '@tsrx/core'
@@ -8700,8 +8681,6 @@ snapshots:
   symbol-tree@3.2.4: {}
 
   tagged-tag@1.0.0: {}
-
-  tailwind-merge@3.6.0: {}
 
   tailwindcss@4.3.3: {}
 

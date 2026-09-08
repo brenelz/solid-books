@@ -7,7 +7,7 @@ function Icon(props: IconProps & { children: JSX.Element; fill?: string }) {
   return (
     <svg
       aria-hidden="true"
-      class={cn("size-4", props.class)}
+      class={props.class ?? "size-4"}
       fill={props.fill ?? "none"}
       stroke="currentColor"
       stroke-linecap="round"
