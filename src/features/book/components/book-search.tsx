@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
 export function BookSearch() {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [input, setInput] = createSignal<HTMLInputElement>();
   const inputId = createUniqueId();
 
@@ -20,9 +20,9 @@ export function BookSearch() {
 
   return (
     <form
-      aria-busy={isPending(input) ? "true" : undefined}
+      aria-busy={isPending(() => searchParams.search) ? "true" : undefined}
       class="relative flex-1"
-      data-filtering={isPending(input) ? "" : undefined}
+      data-filtering={isPending(() => searchParams.search) ? "" : undefined}
       onSubmit={(event) => {
         event.preventDefault();
         navigate(input()?.value ?? "");
@@ -36,7 +36,7 @@ export function BookSearch() {
         aria-hidden="true"
         class="text-muted pointer-events-none absolute top-1/2 left-3.5 flex size-4 -translate-y-1/2 items-center justify-center"
       >
-        {isPending(input) ? (
+        {isPending(() => searchParams.search) ? (
           <Spinner class="size-4" />
         ) : (
           <SearchIcon class="size-4" />
