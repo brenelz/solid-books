@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url";
 import { fileRoutes } from "filesystem-routing/vite";
+import netlify from "@netlify/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vitest/config";
 import solid from "@solidjs/vite-plugin";
@@ -16,6 +17,7 @@ export default defineConfig({
       serverFunctions: { configure: "./src/server-config.ts" },
     }),
     fileRoutes({ httpMethods: true, types: true }),
+    netlify({ build: { enabled: true } }),
   ],
   resolve: {
     alias: {
