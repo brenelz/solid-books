@@ -6,15 +6,20 @@ import { Button } from "../components/ui/button";
 import { EmptyState } from "../components/ui/empty-state";
 import { ErrorState } from "../components/ui/error-state";
 import { BackToBooksLink } from "../features/book/components/back-to-books-link";
+import { getApiDelayMs, parseSearchParams } from "../lib/url-state";
 import {
   BookDetail,
   BookDetailSkeleton,
 } from "../features/book/components/book-detail";
 
 export const route = {
-  preload: ({ params }) => {
+  preload: ({ params, location }) => {
     try {
-      if (params.id) void getBookById(params.id);
+      if (params.id)
+        void getBookById(
+          params.id,
+          getApiDelayMs(parseSearchParams(location.query)),
+        );
     } catch (_e) {
       // ignore errors in preload
     }

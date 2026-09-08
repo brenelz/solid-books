@@ -1,6 +1,7 @@
 import { ITEMS_PER_PAGE } from "@/features/book/book-constants";
 
 export type SearchParams = {
+  delay?: string;
   language?: string;
   list?: string;
   page?: string;
@@ -9,6 +10,20 @@ export type SearchParams = {
   search?: string;
   year?: string;
 };
+
+export const API_DELAY_VALUES = [0, 250, 500, 1000, 1500, 2000, 3000] as const;
+export const MAX_API_DELAY_MS = 3000;
+
+export function getApiDelayMs(params: SearchParams): number {
+  const ms = Number(params.delay);
+  if (!Number.isFinite(ms) || ms <= 0) return 0;
+  return Math.min(MAX_API_DELAY_MS, Math.round(ms));
+}
+
+export function formatApiDelay(ms: number): string {
+  if (ms <= 0) return "Off";
+  return ms >= 1000 ? `${ms / 1000}s` : `${ms}ms`;
+}
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
 
@@ -20,6 +35,7 @@ function first(value: string | string[] | undefined): string | undefined {
 
 export function parseSearchParams(params: RawSearchParams): SearchParams {
   return {
+    delay: first(params.delay),
     language: first(params.language),
     list: first(params.list),
     page: first(params.page),
@@ -56,6 +72,7 @@ export function getCurrentPage(params: SearchParams, totalPages?: number): numbe
 export function withFilters(current: SearchParams, patch: Partial<SearchParams>): SearchParams {
   const next: SearchParams = { ...current, ...patch };
   delete next.page;
+  delete next.delay;
   for (const key of FILTER_KEYS) {
     if (next[key] === undefined || next[key] === "") delete next[key];
   }

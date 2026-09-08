@@ -20,6 +20,7 @@ declare module 'virtual:env/server' {
     ? O
     : string;
   const env: {
+    readonly "API_DELAY_MS": __Out<__Schema["server"]["API_DELAY_MS"]>;
     readonly "DATABASE_URL": __Out<__Schema["server"]["DATABASE_URL"]>;
     readonly "DATABASE_URL_UNPOOLED": __Out<__Schema["server"]["DATABASE_URL_UNPOOLED"]>;
     readonly "VITE_APP_NAME": __Out<__Schema["client"]["VITE_APP_NAME"]>;

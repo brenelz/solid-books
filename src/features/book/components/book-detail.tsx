@@ -1,5 +1,6 @@
 import type { JSX } from "@solidjs/web";
 import { For, createMemo } from "solid-js";
+import { useSearchParams } from "@solidjs/router";
 import { getBookById } from "@/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StarRating } from "@/components/ui/star-rating";
@@ -8,11 +9,16 @@ import {
   BookCover,
   BookCoverSkeleton,
 } from "@/features/book/components/book-cover";
+import { getApiDelayMs, parseSearchParams } from "@/lib/url-state";
+import { Title } from "@solidjs/meta";
 
 const DETAIL_SIZES = "(min-width: 768px) 18rem, 60vw";
 
 export function BookDetail(props: { id: string }) {
-  const book = createMemo(() => getBookById(props.id));
+  const [params] = useSearchParams();
+  const book = createMemo(() =>
+    getBookById(props.id, getApiDelayMs(parseSearchParams(params))),
+  );
   const rating = () => Number(book().average_rating);
   const hasRating = () =>
     book().average_rating !== null && !Number.isNaN(rating());
@@ -31,6 +37,7 @@ export function BookDetail(props: { id: string }) {
 
       <div class="min-w-0 flex-1">
         <h1>{book().title}</h1>
+        <Title>{book().title} · Solid Books</Title>
         {book().authors.length > 0 ? (
           <p class="text-muted mt-2 text-base sm:text-lg">
             {book().authors.join(", ")}

@@ -7,6 +7,7 @@ import { getBooksCount } from "@/api";
 import { toBookFilters, toBookQuery } from "@/features/book/book-utils";
 import {
   buildHref,
+  getApiDelayMs,
   getCurrentPage,
   getTotalPages,
   withPage,
@@ -19,7 +20,10 @@ const stepClass =
 
 export function BookPagination(props: { searchParams: SearchParams }) {
   const totalResults = createMemo(() =>
-    getBooksCount(toBookFilters(toBookQuery(props.searchParams))),
+    getBooksCount(
+      toBookFilters(toBookQuery(props.searchParams)),
+      getApiDelayMs(props.searchParams),
+    ),
   );
   const totalPages = () => getTotalPages(totalResults());
   const currentPage = () => getCurrentPage(props.searchParams, totalPages());

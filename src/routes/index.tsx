@@ -11,14 +11,17 @@ import {
   BookPagination,
   BookPaginationSkeleton,
 } from "../features/book/components/book-pagination";
-import { parseSearchParams } from "../lib/url-state";
+import { getApiDelayMs, parseSearchParams } from "../lib/url-state";
+import { Title } from "@solidjs/meta";
 
 export const route = {
   preload: ({ location }) => {
     try {
-      const query = toBookQuery(parseSearchParams(location.query));
-      void getBooksPage(query);
-      void getBooksCount(toBookFilters(query));
+      const searchParams = parseSearchParams(location.query);
+      const query = toBookQuery(searchParams);
+      const delayMs = getApiDelayMs(searchParams);
+      void getBooksPage(query, delayMs);
+      void getBooksCount(toBookFilters(query), delayMs);
     } catch (_e) {
       // ignore errors in preload
     }
@@ -28,7 +31,9 @@ export const route = {
 export default function Home() {
   const [params] = useSearchParams();
   const searchParams = createMemo(() => parseSearchParams(params));
-  const books = createMemo(() => getBooksPage(toBookQuery(searchParams())));
+  const books = createMemo(() =>
+    getBooksPage(toBookQuery(searchParams()), getApiDelayMs(searchParams())),
+  );
 
   return (
     <Errored
@@ -39,6 +44,7 @@ export default function Home() {
         />
       }
     >
+      <Title>Books · Solid Books</Title>
       <div class="flex min-h-0 flex-1 flex-col">
         <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5 transition-opacity duration-200 ease-out group-has-[[data-filtering]]:opacity-60 sm:px-6">
           <Loading fallback={<BookGridSkeleton />}>

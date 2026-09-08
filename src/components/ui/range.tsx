@@ -5,6 +5,7 @@ type Props = {
   hint: Element;
   id: string;
   label: string;
+  onCommit?: (value: number) => void;
   onValueChange: (value: number) => void;
   readout?: Element;
   value: number;
@@ -27,6 +28,10 @@ export function Range(props: Props) {
     return closest;
   };
 
+  function pick(event: { currentTarget: HTMLInputElement }) {
+    return props.values[Number(event.currentTarget.value)] ?? props.value;
+  }
+
   return (
     <div class="flex flex-col gap-2">
       <div class="flex items-baseline justify-between gap-2">
@@ -47,11 +52,8 @@ export function Range(props: Props) {
         id={props.id}
         max={props.values.length - 1}
         min={0}
-        onInput={(event) =>
-          props.onValueChange(
-            props.values[Number(event.currentTarget.value)] ?? props.value,
-          )
-        }
+        onChange={(event) => props.onCommit?.(pick(event))}
+        onInput={(event) => props.onValueChange(pick(event))}
         step={1}
         type="range"
         value={index()}

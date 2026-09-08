@@ -32,7 +32,7 @@ function BookFiltersForm(props: {
   const activeCount = createMemo(
     () =>
       Object.entries(filters()).filter(
-        ([key, value]) => key !== "page" && Boolean(value),
+        ([key, value]) => key !== "page" && key !== "delay" && Boolean(value),
       ).length,
   );
 
