@@ -1,0 +1,47 @@
+{
+  "name": "example-fullstack",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=.env server.js",
+    "serve": "vite preview",
+    "test": "vitest",
+    "lint": "oxlint src",
+    "db:up": "docker compose up -d",
+    "db:migrate": "tsx src/lib/db/migrate.ts",
+    "db:seed": "tsx src/lib/db/seed-authors.ts && tsx src/lib/db/seed-books.ts"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@solidjs/diagnostics": "^2.0.0-rc.6",
+    "@solidjs/testing-library": "^1.0.0-beta.3",
+    "@solidjs/vite-plugin": "^3.0.0-next.38",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/node": "^26.2.0",
+    "eslint-plugin-solid": "~0.17.0",
+    "filesystem-routing": "0.2.1",
+    "jsdom": "^25.0.1",
+    "oxlint": "~1.79.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.2",
+    "vite": "^8.1.5",
+    "vitest": "^4.0.0"
+  },
+  "dependencies": {
+    "@remix-run/cookie": "^0.5.4",
+    "@solidjs/meta": "^1.0.0-next.2",
+    "@solidjs/router": "^2.0.0-next.21",
+    "@solidjs/web": "^2.0.0-rc.6",
+    "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.2",
+    "postgres": "^3.4.9",
+    "solid-js": "^2.0.0-rc.6",
+    "tailwind-merge": "^3.6.0",
+    "valibot": "^1.4.2"
+  }
+}
