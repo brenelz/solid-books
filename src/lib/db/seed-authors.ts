@@ -11,7 +11,7 @@ const DATA_FILE = path.resolve(
 const CHECKPOINT_FILE = path.resolve(process.env.AUTHORS_CHECKPOINT_PATH ?? "author_import_checkpoint.json");
 
 // https://mcauleylab.ucsd.edu/public_datasets/gdrive/goodreads/goodreads_book_authors.json.gz
-const TOTAL_AUTHORS = Number(process.env.TOTAL_AUTHORS ?? 4);
+const TOTAL_AUTHORS = Number(process.env.TOTAL_AUTHORS ?? 88);
 
 interface AuthorData {
   average_rating: string;

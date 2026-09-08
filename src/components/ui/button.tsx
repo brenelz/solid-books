@@ -1,4 +1,5 @@
-import type { JSX } from "@solidjs/web";
+import { type JSX } from "@solidjs/web";
+import { Show } from "solid-js";
 import { cn } from "@/lib/utils";
 
 type Variant = "ghost" | "primary" | "secondary";
@@ -25,36 +26,49 @@ const sizes: Record<Size, string> = {
 };
 
 const variants: Record<Variant, string> = {
-  ghost: "text-muted hover:bg-card hover:text-black dark:hover:bg-card-dark dark:hover:text-white",
+  ghost:
+    "text-muted hover:bg-card hover:text-black dark:hover:bg-card-dark dark:hover:text-white",
   primary: "bg-action text-white hover:bg-action-hover",
   secondary:
     "border-divider hover:border-gray/40 hover:bg-card dark:border-divider-dark dark:hover:border-gray/30 dark:hover:bg-card-dark border bg-white text-black dark:bg-transparent dark:text-white",
 };
 
-export function buttonClasses(props: { class?: string; size?: Size; variant?: Variant } = {}) {
-  return cn(base, sizes[props.size ?? "default"], variants[props.variant ?? "primary"], props.class);
+export function buttonClasses(
+  props: { class?: string; size?: Size; variant?: Variant } = {},
+) {
+  return cn(
+    base,
+    sizes[props.size ?? "default"],
+    variants[props.variant ?? "primary"],
+    props.class,
+  );
 }
 
 export function Button(props: Props) {
   const classes = () =>
-    buttonClasses({ class: props.class, size: props.size, variant: props.variant });
+    buttonClasses({
+      class: props.class,
+      size: props.size,
+      variant: props.variant,
+    });
 
-  if (props.href) {
-    return (
+  return (
+    <Show
+      when={props.href}
+      fallback={
+        <button
+          aria-label={props["aria-label"]}
+          class={classes()}
+          onClick={props.onClick}
+          type={props.type ?? "button"}
+        >
+          {props.children}
+        </button>
+      }
+    >
       <a aria-label={props["aria-label"]} class={classes()} href={props.href}>
         {props.children}
       </a>
-    );
-  }
-
-  return (
-    <button
-      aria-label={props["aria-label"]}
-      class={classes()}
-      onClick={props.onClick}
-      type={props.type ?? "button"}
-    >
-      {props.children}
-    </button>
+    </Show>
   );
 }

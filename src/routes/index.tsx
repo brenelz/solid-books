@@ -15,9 +15,13 @@ import { parseSearchParams } from "../lib/url-state";
 
 export const route = {
   preload: ({ location }) => {
-    const query = toBookQuery(parseSearchParams(location.query));
-    void getBooksPage(query);
-    void getBooksCount(toBookFilters(query));
+    try {
+      const query = toBookQuery(parseSearchParams(location.query));
+      void getBooksPage(query);
+      void getBooksCount(toBookFilters(query));
+    } catch (_e) {
+      // ignore errors in preload
+    }
   },
 } satisfies RouteDefinition;
 
@@ -36,12 +40,12 @@ export default function Home() {
       }
     >
       <div class="flex min-h-0 flex-1 flex-col">
-        <div class="flex-1 px-4 py-5 transition-opacity duration-200 ease-out group-has-[[data-filtering]]:opacity-60 sm:px-6">
+        <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5 transition-opacity duration-200 ease-out group-has-[[data-filtering]]:opacity-60 sm:px-6">
           <Loading fallback={<BookGridSkeleton />}>
             <BookGrid books={books()} searchParams={searchParams()} />
           </Loading>
         </div>
-        <footer class="border-divider-dark mt-auto border-t px-4 py-3 sm:px-6">
+        <footer class="border-divider-dark shrink-0 border-t px-4 py-3 sm:px-6">
           <Loading fallback={<BookPaginationSkeleton />}>
             <BookPagination searchParams={searchParams()} />
           </Loading>

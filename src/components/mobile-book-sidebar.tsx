@@ -8,7 +8,10 @@ const MobileBookSidebarContext = createContext<{
   open: () => void;
 }>();
 
-export function MobileBookSidebar(props: { children: JSX.Element; sidebar: JSX.Element }) {
+export function MobileBookSidebar(props: {
+  children: JSX.Element;
+  sidebar: JSX.Element;
+}) {
   const [isOpen, setIsOpen] = createSignal(false);
 
   return (
@@ -28,7 +31,8 @@ export function MobileBookSidebar(props: { children: JSX.Element; sidebar: JSX.E
         <aside
           class="border-divider-dark bg-surface-dark fixed inset-y-0 left-0 z-50 flex w-[min(20rem,calc(100vw-3rem))] max-w-full flex-col overflow-hidden border-r pt-[max(1.25rem,env(safe-area-inset-top))] pr-4 pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] shadow-2xl md:hidden"
           onClick={(event) => {
-            if ((event.target as HTMLElement).closest("a[href]")) setIsOpen(false);
+            if ((event.target as HTMLElement).closest("a[href]"))
+              setIsOpen(false);
           }}
         >
           <button

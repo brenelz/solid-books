@@ -11,7 +11,7 @@ const DATA_FILE = path.resolve(
 const CHECKPOINT_FILE = path.resolve(process.env.BOOKS_CHECKPOINT_PATH ?? "book_import_checkpoint.json");
 
 // https://mcauleylab.ucsd.edu/public_datasets/gdrive/goodreads/goodreads_books.json.gz
-const TOTAL_BOOKS = Number(process.env.TOTAL_BOOKS ?? 4);
+const TOTAL_BOOKS = Number(process.env.TOTAL_BOOKS ?? 90);
 
 interface BookData {
   book_id: string;

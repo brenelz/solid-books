@@ -19,7 +19,7 @@ export function Select(props: Props) {
           props.class,
         )}
         id={props.id}
-        onChange={props.onChange}
+        onChange={(e) => props.onChange?.(e)}
         value={props.value}
       >
         {props.children}

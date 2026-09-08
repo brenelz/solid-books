@@ -10,7 +10,7 @@ import { processEntities } from "./seed-utils";
 
 const BATCH_SIZE = 900;
 const CHECKPOINT_FILE = "thumbhash_update_checkpoint.json";
-const TOTAL_BOOKS = 4; // 2360655 in full dataset, 4 in sample data
+const TOTAL_BOOKS = 90;
 const CONCURRENCY_LIMIT = 10;
 
 interface BookData {

@@ -24,7 +24,7 @@ export function IconButton(props: Props) {
     <button
       aria-label={props.label}
       class={cn(base, sizes[props.size ?? "default"], props.class)}
-      onClick={props.onClick}
+      onClick={(e) => props.onClick?.(e)}
       type="button"
     >
       {props.children}

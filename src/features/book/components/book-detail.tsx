@@ -3,20 +3,19 @@ import { For, createMemo } from "solid-js";
 import { getBookById } from "@/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StarRating } from "@/components/ui/star-rating";
-import type { BookDetails } from "@/features/book/book-queries";
 import { formatCount, getLanguageLabel } from "@/features/book/book-utils";
-import { BookCover, BookCoverSkeleton } from "@/features/book/components/book-cover";
+import {
+  BookCover,
+  BookCoverSkeleton,
+} from "@/features/book/components/book-cover";
 
 const DETAIL_SIZES = "(min-width: 768px) 18rem, 60vw";
 
 export function BookDetail(props: { id: string }) {
   const book = createMemo(() => getBookById(props.id));
-  return <BookDetailView book={book()} />;
-}
-
-function BookDetailView(props: { book: BookDetails }) {
-  const rating = () => Number(props.book.average_rating);
-  const hasRating = () => props.book.average_rating !== null && !Number.isNaN(rating());
+  const rating = () => Number(book().average_rating);
+  const hasRating = () =>
+    book().average_rating !== null && !Number.isNaN(rating());
 
   return (
     <article class="flex flex-col gap-8 md:flex-row md:gap-10">
@@ -24,43 +23,49 @@ function BookDetailView(props: { book: BookDetails }) {
         <BookCover
           class="shadow-soft ring-divider/70 dark:ring-divider-dark/70 ring-1"
           sizes={DETAIL_SIZES}
-          src={props.book.image_url}
-          thumbhash={props.book.thumbhash}
-          title={props.book.title}
+          src={book().image_url}
+          thumbhash={book().thumbhash}
+          title={book().title}
         />
       </div>
 
       <div class="min-w-0 flex-1">
-        <h1>{props.book.title}</h1>
-        {props.book.authors.length > 0 ? (
-          <p class="text-muted mt-2 text-base sm:text-lg">{props.book.authors.join(", ")}</p>
+        <h1>{book().title}</h1>
+        {book().authors.length > 0 ? (
+          <p class="text-muted mt-2 text-base sm:text-lg">
+            {book().authors.join(", ")}
+          </p>
         ) : null}
 
         {hasRating() ? (
           <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1">
             <StarRating rating={rating()} />
-            <span class="text-sm font-semibold tabular-nums">{rating().toFixed(1)}</span>
-            {props.book.ratings_count ? (
+            <span class="text-sm font-semibold tabular-nums">
+              {rating().toFixed(1)}
+            </span>
+            {book().ratings_count ? (
               <span class="text-muted text-sm tabular-nums">
-                {formatCount(props.book.ratings_count)} ratings
+                {formatCount(book().ratings_count ?? 0)} ratings
               </span>
             ) : null}
           </div>
         ) : null}
 
-        {props.book.description ? (
-          <p class="text-muted mt-6 max-w-prose text-sm leading-7">{props.book.description}</p>
+        {book().description ? (
+          <p class="text-muted mt-6 max-w-prose text-sm leading-7">
+            {book().description}
+          </p>
         ) : null}
 
         <dl class="border-divider-dark mt-8 grid grid-cols-1 gap-x-8 gap-y-4 border-t pt-6 sm:grid-cols-2">
           <Fact label="Pages">
-            {props.book.num_pages ? props.book.num_pages.toLocaleString() : "Unknown"}
+            {book().num_pages ? book().num_pages?.toLocaleString() : "Unknown"}
           </Fact>
-          <Fact label="Language">{getLanguageLabel(props.book.language_code)}</Fact>
-          <Fact label="Published">{props.book.publication_year ?? "Unknown"}</Fact>
-          <Fact label="Publisher">{props.book.publisher ?? "Unknown"}</Fact>
+          <Fact label="Language">{getLanguageLabel(book().language_code)}</Fact>
+          <Fact label="Published">{book().publication_year ?? "Unknown"}</Fact>
+          <Fact label="Publisher">{book().publisher ?? "Unknown"}</Fact>
           <Fact label="ISBN">
-            <span class="font-mono text-xs">{props.book.isbn ?? "None"}</span>
+            <span class="font-mono text-xs">{book().isbn ?? "None"}</span>
           </Fact>
         </dl>
       </div>
@@ -72,7 +77,9 @@ function Fact(props: { children: JSX.Element; label: string }) {
   return (
     <div class="flex items-start gap-3">
       <div class="min-w-0">
-        <dt class="text-muted text-xs font-semibold tracking-wide uppercase">{props.label}</dt>
+        <dt class="text-muted text-xs font-semibold tracking-wide uppercase">
+          {props.label}
+        </dt>
         <dd class="mt-0.5 truncate text-sm">{props.children}</dd>
       </div>
     </div>
