@@ -64,8 +64,8 @@ importers:
         specifier: ^26.5.0
         version: 26.5.0
       eslint-plugin-solid:
-        specifier: ~0.17.0
-        version: 0.17.0(eslint@10.9.1(jiti@2.7.0))(typescript@5.9.3)
+        specifier: ~0.18.0
+        version: 0.18.0(eslint@10.9.1(jiti@2.7.0))(typescript@5.9.3)
       filesystem-routing:
         specifier: 0.2.1
         version: 0.2.1(vite@8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
@@ -2595,8 +2595,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-plugin-solid@0.17.0:
-    resolution: {integrity: sha512-0x38zjAZVm4vW5u5mS14WxO9BJsal3IxsR/8QOB2nBiXBdH1LlbbRs2YfqgtPWVpy3OIlnt6yGhoXuZmoHULwQ==}
+  eslint-plugin-solid@0.18.0:
+    resolution: {integrity: sha512-Q3tSfb5EqU1nt8raRR8u7uMCLmB1779atKFxZ48TLor0rX+S0Bxt1gcTgYQTK+FK0T/iwFZJf13sSQncjFOBPg==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
@@ -7024,7 +7024,7 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-plugin-solid@0.17.0(eslint@10.9.1(jiti@2.7.0))(typescript@5.9.3):
+  eslint-plugin-solid@0.18.0(eslint@10.9.1(jiti@2.7.0))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/utils': 8.70.0(eslint@10.9.1(jiti@2.7.0))(typescript@5.9.3)
       eslint: 10.9.1(jiti@2.7.0)

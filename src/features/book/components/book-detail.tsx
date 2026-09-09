@@ -15,8 +15,7 @@ const DETAIL_SIZES = "(min-width: 768px) 18rem, 60vw";
 
 export function BookDetail(props: { book: BookDetails }) {
   const book = createMemo(() => preloadBookCover(props.book), {
-    name: "BookDetail.decodedBook",
-    ssrSource: "client",
+    name: "BookDetail.readyBook",
   });
   const rating = () => Number(book().average_rating);
   const hasRating = () =>
@@ -27,6 +26,7 @@ export function BookDetail(props: { book: BookDetails }) {
       <div class="mx-auto w-40 shrink-0 sm:w-48 md:mx-0 md:w-72">
         <BookCover
           class="shadow-soft ring-divider/70 dark:ring-divider-dark/70 ring-1"
+          priority
           sizes={DETAIL_SIZES}
           src={book().image_url}
           thumbhash={book().thumbhash}

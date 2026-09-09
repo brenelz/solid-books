@@ -23,7 +23,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^26.5.0",
-    "eslint-plugin-solid": "~0.17.0",
+    "eslint-plugin-solid": "~0.18.0",
     "filesystem-routing": "0.2.1",
     "jsdom": "^25.0.1",
     "oxlint": "~1.79.0",

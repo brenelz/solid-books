@@ -6,6 +6,8 @@ export function getLargeBookImageUrl(url: string): string {
 }
 
 export const ITEMS_PER_PAGE = 28;
+// Match the demo's eager window; the remaining covers load on scroll.
+export const PRIORITY_COVER_COUNT = 10;
 
 export const MIN_YEAR = 1950;
 export const MAX_YEAR = 2023;

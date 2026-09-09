@@ -21,7 +21,7 @@ export const route = {
           params.id,
           getApiDelayMs(parseSearchParams(location.query)),
         );
-    } catch (_e) {
+    } catch {
       // ignore errors in preload
     }
   },

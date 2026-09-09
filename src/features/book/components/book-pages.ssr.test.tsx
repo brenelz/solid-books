@@ -3,8 +3,9 @@ import { renderToStream, renderToString } from "@solidjs/web";
 import { expect, test, vi } from "vitest";
 import { getBookById, getBooksPage } from "@/api";
 import type { BookDetails } from "@/features/book/book-queries";
-import { EMPTY_IMAGE_URL } from "@/features/book/book-constants";
+import { EMPTY_IMAGE_URL, ITEMS_PER_PAGE, PRIORITY_COVER_COUNT } from "@/features/book/book-constants";
 import { BookCoverPreloads } from "./book-cover-preloads";
+import { BookGrid } from "./book-grid";
 import Home from "@/routes/index";
 import BookPage from "@/routes/[id]";
 
@@ -31,8 +32,10 @@ const book: BookDetails = {
 };
 
 function imagePreloads(html: string) {
-  // A URL inside serialized JavaScript is not discoverable by the HTML parser.
-  const markup = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "");
+  // Neither serialized JavaScript nor inert templates start image fetches.
+  const markup = html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "")
+    .replace(/<template\b[^>]*>[\s\S]*?<\/template>/g, "");
   return [...markup.matchAll(/<link\b[^>]*>/g)]
     .map(([tag]) => tag)
     .filter((tag) => tag.includes('rel="preload"') && tag.includes('as="image"'))
@@ -40,7 +43,7 @@ function imagePreloads(html: string) {
 }
 
 test.each(["/?search=Dune", "/1"])(
-  "%s streams its skeleton first, then discoverable image hints without hydration",
+  "%s streams its skeleton first, then real covers and discoverable hints without hydration",
   async (url) => {
     const data = Promise.withResolvers<BookDetails>();
     vi.mocked(getBooksPage).mockReturnValue(data.promise.then((book) => [book]));
@@ -75,6 +78,9 @@ test.each(["/?search=Dune", "/1"])(
       "https://images.gr-assets.com/books/1426192671l/53732.jpg",
     ]);
     expect(html).not.toContain("client-only content");
+    expect(html).toMatch(/<img\b[^>]*src="https:\/\/images.gr-assets.com\/books\/1426192671l\/53732.jpg"/);
+    expect(html).toContain('loading="eager"');
+    expect(html).toContain('fetchpriority="high"');
     expect(errors).toEqual([]);
     if (url.startsWith("/?")) {
       expect(getBooksPage).toHaveBeenCalledWith(
@@ -99,6 +105,30 @@ test("cover hints deduplicate normalized URLs and include the no-photo fallback"
   ), { onHead: (html) => { head = html; } });
 
   expect(imagePreloads(head)).toEqual([largeUrl, EMPTY_IMAGE_URL]);
+});
+
+test("the shell renders every cover immediately and preloads only the eager window", () => {
+  const books = Array.from({ length: ITEMS_PER_PAGE }, (_, index) => ({
+    ...book,
+    id: index + 1,
+    image_url: `/shell-${index}.jpg`,
+  }));
+  let head = "";
+  const html = renderToString(() => (
+    <>
+      <BookCoverPreloads books={books} />
+      <BookGrid books={books} searchParams={{}} />
+    </>
+  ), { onHead: (html) => { head = html; } });
+
+  expect(imagePreloads(head)).toEqual(
+    books.slice(0, PRIORITY_COVER_COUNT).map((book) => book.image_url),
+  );
+  expect(html.match(/<img\b/g)).toHaveLength(ITEMS_PER_PAGE);
+  expect(html.match(/loading="eager"/g)).toHaveLength(PRIORITY_COVER_COUNT);
+  expect(html.match(/loading="lazy"/g)).toHaveLength(ITEMS_PER_PAGE - PRIORITY_COVER_COUNT);
+  expect(html.match(/fetchpriority="high"/g)).toHaveLength(PRIORITY_COVER_COUNT);
+  expect(head.match(/fetchpriority="high"/g)).toHaveLength(PRIORITY_COVER_COUNT);
 });
 
 test("empty results produce no image preload hints", () => {

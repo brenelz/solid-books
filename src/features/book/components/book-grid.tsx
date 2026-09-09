@@ -1,5 +1,5 @@
 import { For, Show } from "solid-js";
-import { ITEMS_PER_PAGE } from "@/features/book/book-constants";
+import { ITEMS_PER_PAGE, PRIORITY_COVER_COUNT } from "@/features/book/book-constants";
 import type { BookSummary } from "@/features/book/book-queries";
 import {
   BookCard,
@@ -28,8 +28,12 @@ export function BookGrid(props: {
       >
         <div class={gridClass}>
           <For each={props.books}>
-            {(book) => (
-              <BookCard book={book} searchParams={props.searchParams} />
+            {(book, index) => (
+              <BookCard
+                book={book}
+                priority={index() < PRIORITY_COVER_COUNT}
+                searchParams={props.searchParams}
+              />
             )}
           </For>
         </div>

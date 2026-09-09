@@ -12,6 +12,7 @@ const GRID_SIZES =
 type Props = {
   book: BookSummary;
   searchParams: SearchParams;
+  priority: boolean;
 };
 
 export function BookCard(props: Props) {
@@ -28,6 +29,7 @@ export function BookCard(props: Props) {
     >
       <BookCover
         class="group-hover:shadow-soft transition-shadow"
+        priority={props.priority}
         sizes={GRID_SIZES}
         src={props.book.image_url}
         thumbhash={props.book.thumbhash}

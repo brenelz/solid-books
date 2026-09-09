@@ -24,7 +24,7 @@ export const route = {
       const delayMs = getApiDelayMs(searchParams);
       void getBooksPage(query, delayMs);
       void getBooksCount(toBookFilters(query), delayMs);
-    } catch (_e) {
+    } catch {
       // ignore errors in preload
     }
   },
@@ -36,11 +36,10 @@ export default function Home() {
   const bookData = createMemo(() =>
     getBooksPage(toBookQuery(searchParams()), getApiDelayMs(searchParams())),
   );
-  // Declare the browser-only dependency before book data resolves, so the SSR
-  // boundary can hand off immediately instead of failing a later stream.
+  // On client navigation, warm priority covers in parallel before swapping
+  // the grid. SSR and hydration use the book data immediately.
   const books = createMemo(() => preloadBookCovers(bookData()), {
-    name: "Home.decodedBooks",
-    ssrSource: "client",
+    name: "Home.readyBooks",
   });
 
   return (
@@ -53,7 +52,7 @@ export default function Home() {
       }
     >
       <Title>Books · Solid Books</Title>
-      {/* Resource hints stream with the data, ahead of the client-only reveal. */}
+      {/* Discoverable hints start priority requests as soon as data streams. */}
       <Loading>
         <BookCoverPreloads books={bookData()} />
       </Loading>
