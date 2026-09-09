@@ -10,6 +10,7 @@ import {
 import { GENERATED_PREVIEW_BOOKS } from "@/features/book/book-preview-catalog";
 import type { BookFilters, BookQuery } from "@/features/book/book-utils";
 import { SAMPLE_BOOKS } from "@/features/book/data/sample-books";
+import { getBookCoverUrl } from "@/features/book/data/cover-images";
 import { db } from "@/lib/db/drizzle";
 import { authors, books, bookToAuthor } from "@/lib/db/schema";
 
@@ -60,7 +61,12 @@ const imageFilter = () =>
 
 const searchFilter = (search: string) =>
   search
-    ? sql`to_tsvector('english', ${books.title_tsv}) @@ plainto_tsquery('english', unaccent(${search}))`
+    // Parse and quote lexemes before adding prefix operators, so punctuation
+    // stays search text rather than becoming user-supplied tsquery syntax.
+    ? sql`to_tsvector('english', ${books.title_tsv}) @@ (
+        SELECT string_agg(quote_literal(term) || ':*', ' & ')::tsquery
+        FROM unnest(tsvector_to_array(to_tsvector('english', unaccent(${search})))) AS terms(term)
+      )`
     : undefined;
 
 const isbnFilter = (isbns: string) => {
@@ -128,7 +134,14 @@ function filterPreview({
 
 function getPreviewBooks(query: BookQuery): BookSummary[] {
   const start = (query.page - 1) * ITEMS_PER_PAGE;
-  return filterPreview(query).slice(start, start + ITEMS_PER_PAGE);
+  return filterPreview(query).slice(start, start + ITEMS_PER_PAGE).map(withBookCover);
+}
+
+function withBookCover<T extends { isbn: string | null; image_url: string | null; thumbhash: string | null }>(book: T): T {
+  const imageUrl = getBookCoverUrl(book.isbn, book.image_url);
+  return imageUrl === book.image_url
+    ? book
+    : { ...book, image_url: imageUrl, thumbhash: null };
 }
 
 function getPreviewCount(filters: BookFilters): number {
@@ -139,9 +152,10 @@ export async function getBooksPage(query: BookQuery): Promise<BookSummary[]> {
   const database = db;
   if (!database) return getPreviewBooks(query);
 
-  return database
+  const result = await database
     .select({
       id: books.id,
+      isbn: books.isbn,
       image_url: books.image_url,
       thumbhash: books.thumbhash,
       title: books.title,
@@ -151,6 +165,11 @@ export async function getBooksPage(query: BookQuery): Promise<BookSummary[]> {
     .orderBy(books.id)
     .limit(ITEMS_PER_PAGE)
     .offset((query.page - 1) * ITEMS_PER_PAGE);
+
+  return result.map((book) => {
+    const { isbn: _isbn, ...summary } = withBookCover(book);
+    return summary;
+  });
 }
 
 export async function getBooksCount(filters: BookFilters): Promise<number> {
@@ -172,7 +191,7 @@ export async function getBookById(id: string): Promise<BookDetails> {
   if (!database) {
     const book = previewBooks.find((book) => book.id === bookId);
     if (!book) throw new Error("Book not found");
-    return book;
+    return withBookCover(book);
   }
 
   const result = await database
@@ -200,5 +219,5 @@ export async function getBookById(id: string): Promise<BookDetails> {
 
   const book = result[0];
   if (!book) throw new Error("Book not found");
-  return book;
+  return withBookCover(book);
 }

@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { closeSql, requireSql } from "./drizzle";
 import { processEntities } from "./seed-utils";
+import { getBookCoverUrl } from "../../features/book/data/cover-images";
 
 const BATCH_SIZE = 900;
 const DATA_FILE = path.resolve(
@@ -11,7 +12,7 @@ const DATA_FILE = path.resolve(
 const CHECKPOINT_FILE = path.resolve(process.env.BOOKS_CHECKPOINT_PATH ?? "book_import_checkpoint.json");
 
 // https://mcauleylab.ucsd.edu/public_datasets/gdrive/goodreads/goodreads_books.json.gz
-const TOTAL_BOOKS = Number(process.env.TOTAL_BOOKS ?? 90);
+const TOTAL_BOOKS = Number(process.env.TOTAL_BOOKS ?? 83);
 
 interface BookData {
   book_id: string;
@@ -57,7 +58,7 @@ async function batchInsertBooks(batch: BookData[]) {
         book.title,
         book.publication_year ? parseInt(book.publication_year) : null,
         book.publisher || null,
-        book.image_url || null,
+        getBookCoverUrl(book.isbn, book.image_url || null),
         book.description || null,
         book.num_pages ? parseInt(book.num_pages) : null,
         book.language_code || null,
