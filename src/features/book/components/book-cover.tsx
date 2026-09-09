@@ -1,9 +1,6 @@
 import { createMemo, Show } from "solid-js";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  EMPTY_IMAGE_URL,
-  getLargeBookImageUrl,
-} from "@/features/book/book-constants";
+import { loadBookCover } from "@/features/book/book-images";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -16,17 +13,7 @@ type Props = {
 
 export function BookCover(props: Props) {
   const decodedSrc = createMemo(
-    () => {
-      const src = getLargeBookImageUrl(props.src ?? EMPTY_IMAGE_URL);
-      const image = new Image();
-      image.src = src;
-
-      return image.decode().then(
-        () => src,
-        () => null,
-      );
-    },
-    // Browser-only decoding keeps the parent Loading fallback through hydration.
+    () => loadBookCover(props.src),
     { name: "BookCover.decodedSrc", ssrSource: "client" },
   );
 

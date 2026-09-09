@@ -13,6 +13,7 @@ import {
 } from "../features/book/components/book-pagination";
 import { getApiDelayMs, parseSearchParams } from "../lib/url-state";
 import { Title } from "@solidjs/meta";
+import { preloadBookCovers } from "../features/book/book-images";
 
 export const route = {
   preload: ({ location }) => {
@@ -31,9 +32,15 @@ export const route = {
 export default function Home() {
   const [params] = useSearchParams();
   const searchParams = createMemo(() => parseSearchParams(params));
-  const books = createMemo(() =>
+  const bookData = createMemo(() =>
     getBooksPage(toBookQuery(searchParams()), getApiDelayMs(searchParams())),
   );
+  // Declare the browser-only dependency before book data resolves, so the SSR
+  // boundary can hand off immediately instead of failing a later stream.
+  const books = createMemo(() => preloadBookCovers(bookData()), {
+    name: "Home.decodedBooks",
+    ssrSource: "client",
+  });
 
   return (
     <Errored

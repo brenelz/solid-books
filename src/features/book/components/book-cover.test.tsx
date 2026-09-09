@@ -5,6 +5,7 @@ import "@testing-library/jest-dom/vitest";
 import { createSignal, flush, For, Loading } from "solid-js";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { EMPTY_IMAGE_URL } from "@/features/book/book-constants";
+import { loadBookCover } from "@/features/book/book-images";
 import { BookCover } from "./book-cover";
 
 let requests: {
@@ -128,7 +129,7 @@ test("also waits for the no-photo image when a book has no cover URL", async () 
 
 test("keeps the previous decoded cover while replacing it and ignores stale decodes", async () => {
   const { artifact } = await captureArtifact(async () => {
-    const [src, setSrc] = createSignal("/first.jpg", { name: "test.coverSrc" });
+    const [src, setSrc] = createSignal("/replace-first.jpg", { name: "test.coverSrc" });
     render(() => (
       <Loading fallback={<p>Loading cover</p>}>
         <BookCover title="Book" src={src()} sizes="33vw" thumbhash={null} />
@@ -138,31 +139,48 @@ test("keeps the previous decoded cover while replacing it and ignores stale deco
     requests[0].resolve();
     await settleImages();
 
-    setSrc("/second.jpg");
+    setSrc("/replace-second.jpg");
     flush();
-    setSrc("/third.jpg");
+    setSrc("/replace-third.jpg");
     flush();
     expect(requests.map((request) => request.src)).toEqual([
-      "/first.jpg", "/second.jpg", "/third.jpg",
+      "/replace-first.jpg", "/replace-second.jpg", "/replace-third.jpg",
     ]);
     expect(screen.getByRole("img", { name: "Book" })).toHaveAttribute(
-      "src", "/first.jpg",
+      "src", "/replace-first.jpg",
     );
 
     requests[1].resolve();
     await settleImages();
     expect(screen.getByRole("img", { name: "Book" })).toHaveAttribute(
-      "src", "/first.jpg",
+      "src", "/replace-first.jpg",
     );
 
     requests[2].resolve();
     await settleImages();
     expect(screen.getByRole("img", { name: "Book" })).toHaveAttribute(
-      "src", "/third.jpg",
+      "src", "/replace-third.jpg",
     );
     expect(screen.queryByText("Loading cover")).not.toBeInTheDocument();
   }, { scenario: "book-cover-source-change" });
 
   expect(artifact).toHaveNoDiagnostics();
   expect(artifact).toStayWithinRerunBudget(2, { scope: "BookCover.decodedSrc" });
+});
+
+test("a preloaded cover renders immediately without a second decode", async () => {
+  const ready = loadBookCover("/preloaded.jpg");
+  requests[0].resolve();
+  await ready;
+
+  render(() => (
+    <Loading fallback={<p>Loading cover</p>}>
+      <BookCover title="Preloaded" src="/preloaded.jpg" sizes="33vw" thumbhash={null} />
+    </Loading>
+  ));
+  flush();
+
+  expect(requests).toHaveLength(1);
+  expect(screen.queryByText("Loading cover")).not.toBeInTheDocument();
+  expect(screen.getByRole("img", { name: "Preloaded" })).toHaveAttribute("src", "/preloaded.jpg");
 });

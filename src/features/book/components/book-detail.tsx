@@ -11,14 +11,19 @@ import {
 } from "@/features/book/components/book-cover";
 import { getApiDelayMs, parseSearchParams } from "@/lib/url-state";
 import { Title } from "@solidjs/meta";
+import { preloadBookCover } from "@/features/book/book-images";
 
 const DETAIL_SIZES = "(min-width: 768px) 18rem, 60vw";
 
 export function BookDetail(props: { id: string }) {
   const [params] = useSearchParams();
-  const book = createMemo(() =>
+  const bookData = createMemo(() =>
     getBookById(props.id, getApiDelayMs(parseSearchParams(params))),
   );
+  const book = createMemo(() => preloadBookCover(bookData()), {
+    name: "BookDetail.decodedBook",
+    ssrSource: "client",
+  });
   const rating = () => Number(book().average_rating);
   const hasRating = () =>
     book().average_rating !== null && !Number.isNaN(rating());
