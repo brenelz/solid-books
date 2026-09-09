@@ -14,6 +14,7 @@ import {
 import { getApiDelayMs, parseSearchParams } from "../lib/url-state";
 import { Title } from "@solidjs/meta";
 import { preloadBookCovers } from "../features/book/book-images";
+import { BookCoverPreloads } from "../features/book/components/book-cover-preloads";
 
 export const route = {
   preload: ({ location }) => {
@@ -52,6 +53,10 @@ export default function Home() {
       }
     >
       <Title>Books · Solid Books</Title>
+      {/* Resource hints stream with the data, ahead of the client-only reveal. */}
+      <Loading>
+        <BookCoverPreloads books={bookData()} />
+      </Loading>
       <div class="flex min-h-0 flex-1 flex-col">
         <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6">
           <Loading fallback={<BookGridSkeleton />}>

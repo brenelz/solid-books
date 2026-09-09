@@ -1,7 +1,6 @@
 import type { JSX } from "@solidjs/web";
 import { For, createMemo } from "solid-js";
-import { useSearchParams } from "@solidjs/router";
-import { getBookById } from "@/api";
+import type { BookDetails } from "@/features/book/book-queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StarRating } from "@/components/ui/star-rating";
 import { formatCount, getLanguageLabel } from "@/features/book/book-utils";
@@ -9,18 +8,13 @@ import {
   BookCover,
   BookCoverSkeleton,
 } from "@/features/book/components/book-cover";
-import { getApiDelayMs, parseSearchParams } from "@/lib/url-state";
 import { Title } from "@solidjs/meta";
 import { preloadBookCover } from "@/features/book/book-images";
 
 const DETAIL_SIZES = "(min-width: 768px) 18rem, 60vw";
 
-export function BookDetail(props: { id: string }) {
-  const [params] = useSearchParams();
-  const bookData = createMemo(() =>
-    getBookById(props.id, getApiDelayMs(parseSearchParams(params))),
-  );
-  const book = createMemo(() => preloadBookCover(bookData()), {
+export function BookDetail(props: { book: BookDetails }) {
+  const book = createMemo(() => preloadBookCover(props.book), {
     name: "BookDetail.decodedBook",
     ssrSource: "client",
   });

@@ -1,12 +1,13 @@
 import { Title } from "@solidjs/meta";
-import { RouteDefinition, useParams } from "@solidjs/router";
-import { Errored, Loading } from "solid-js";
+import { RouteDefinition, useParams, useSearchParams } from "@solidjs/router";
+import { createMemo, Errored, Loading } from "solid-js";
 import { getBookById } from "../api";
 import { Button } from "../components/ui/button";
 import { EmptyState } from "../components/ui/empty-state";
 import { ErrorState } from "../components/ui/error-state";
 import { BackToBooksLink } from "../features/book/components/back-to-books-link";
 import { getApiDelayMs, parseSearchParams } from "../lib/url-state";
+import { BookCoverPreloads } from "../features/book/components/book-cover-preloads";
 import {
   BookDetail,
   BookDetailSkeleton,
@@ -28,6 +29,11 @@ export const route = {
 
 export default function BookPage() {
   const params = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const bookData = createMemo(
+    () => getBookById(params.id, getApiDelayMs(parseSearchParams(searchParams))),
+    { name: "BookPage.bookData" },
+  );
 
   return (
     <div class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5 sm:px-6">
@@ -58,8 +64,11 @@ export default function BookPage() {
           );
         }}
       >
+        <Loading>
+          <BookCoverPreloads books={[bookData()]} />
+        </Loading>
         <Loading fallback={<BookDetailSkeleton />}>
-          <BookDetail id={params.id} />
+          <BookDetail book={bookData()} />
         </Loading>
       </Errored>
     </div>
