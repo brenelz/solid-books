@@ -1,5 +1,5 @@
 import { RouteDefinition, useSearchParams } from "@solidjs/router";
-import { createMemo, Errored, Loading } from "solid-js";
+import { createMemo, Errored, isPending, latest, Loading } from "solid-js";
 import { getBooksCount, getBooksPage } from "../api";
 import { ErrorState } from "../components/ui/error-state";
 import { toBookFilters, toBookQuery } from "../features/book/book-utils";
@@ -53,9 +53,16 @@ export default function Home() {
     >
       <Title>Books · Solid Books</Title>
       <div class="flex min-h-0 flex-1 flex-col">
-        <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5 transition-opacity duration-200 ease-out group-has-[[data-filtering]]:opacity-60 sm:px-6">
+        <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6">
           <Loading fallback={<BookGridSkeleton />}>
-            <BookGrid books={books()} searchParams={searchParams()} />
+            {/* Keep the pending indicator live while retaining the old page. */}
+            <div
+              aria-busy={latest(() => isPending(books)) ? "true" : undefined}
+              data-pending={latest(() => isPending(books)) ? "" : undefined}
+              class="transition-opacity duration-200 ease-out data-[pending]:opacity-60 group-has-[[data-filtering]]:opacity-60"
+            >
+              <BookGrid books={books()} searchParams={searchParams()} />
+            </div>
           </Loading>
         </div>
         <footer class="border-divider-dark shrink-0 border-t px-4 py-3 sm:px-6">
