@@ -5,7 +5,13 @@ import { getPooledDatabaseUrl } from "./database-url";
 const connectionString = getPooledDatabaseUrl();
 
 export const sql = connectionString
-  ? postgres(connectionString, { prepare: false })
+  ? postgres(connectionString, {
+      prepare: false,
+      // The prerender crawl runs this module inside the `vite build` process
+      // (see vite.config.ts). An open pool would keep that process alive
+      // forever, so there it lets go of idle connections right away.
+      ...(process.env.PRERENDERING && { idle_timeout: 1 }),
+    })
   : null;
 export const db = sql ? drizzle(sql) : null;
 

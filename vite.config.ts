@@ -19,6 +19,15 @@ export default defineConfig({
     }),
     fileRoutes({ httpMethods: true, types: true }),
     netlify({ build: { enabled: true } }),
+    // Tells the server bundle it is being run by the build, not deployed.
+    // Set from `config` so it lands before the crawl imports that bundle.
+    {
+      name: "prerendering-env",
+      apply: "build",
+      config() {
+        process.env.PRERENDERING = "1";
+      },
+    },
     // Hybrid: the Netlify function still serves everything else. Only the
     // homepage is written out, so its first byte comes off the CDN.
     prerender({
