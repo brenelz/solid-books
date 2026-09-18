@@ -4,6 +4,7 @@ import netlify from "@netlify/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vitest/config";
 import solid from "@solidjs/vite-plugin";
+import { prerender } from "prerender-crawler/vite";
 
 export default defineConfig({
   plugins: [
@@ -18,6 +19,13 @@ export default defineConfig({
     }),
     fileRoutes({ httpMethods: true, types: true }),
     netlify({ build: { enabled: true } }),
+    // Hybrid: the Netlify function still serves everything else. Only the
+    // homepage is written out, so its first byte comes off the CDN.
+    prerender({
+      mode: "hybrid",
+      crawlLinks: false,
+      emitPages: (path) => path === "/",
+    }),
   ],
   resolve: {
     alias: {
